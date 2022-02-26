@@ -1,5 +1,7 @@
+use std::str::FromStr;
 use std::convert::TryFrom;
 
+#[derive(Debug)]
 pub enum Method {
     GET,
     HEAD,
@@ -12,10 +14,23 @@ pub enum Method {
     PATCH,
 }
 
-impl Method for TryFrom {
-    type MethodError;
+impl FromStr for Method {
+    type Err = MethodError;
 
-    /// Performs the conversion.
-    #[stable(feature = "try_from", since = "1.34.0")]
-    fn try_from(value: T) -> Result<Self, Self::Error>;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "GET" => Ok(Self::GET),
+            "DELETE" => Ok(Self::DELETE),
+            "POST" => Ok(Self::POST),
+            "PUT" => Ok(Self::PUT),
+            "HEAD" => Ok(Self::HEAD),
+            "CONNECT" => Ok(Self::CONNECT),
+            "OPTIONS" => Ok(Self::OPTIONS),
+            "TRACE" => Ok(Self::TRACE),
+            "PATCH" => Ok(Self::PATCH),
+            _ => Err(MethodError),
+        }
+    }
 }
+
+pub struct MethodError;

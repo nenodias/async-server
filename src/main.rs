@@ -1,6 +1,7 @@
 use server::Server;
 
 mod server;
+mod http;
 
 #[tokio::main]
 async fn main() {
