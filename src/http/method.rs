@@ -1,5 +1,4 @@
 use std::str::FromStr;
-use std::convert::TryFrom;
 
 #[derive(Debug)]
 pub enum Method {

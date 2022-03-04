@@ -1,7 +1,7 @@
 use tokio::net::{TcpListener, TcpStream};
-use crate::http::{Request, Method, QueryString};
-use tokio::io::AsyncReadExt;
-use tokio::io::AsyncWriteExt;
+use crate::http::{Request, Response, StatusCode};
+use tokio::io::{AsyncReadExt};
+
 
 pub struct Server {
     addr: String,
@@ -23,13 +23,14 @@ impl Server {
     }
 
     async fn process(&self, mut socket: TcpStream) {
-        let mut buff: [u8;1024] = [0; 1024];
+        let mut buff: [u8;2048] = [0; 2048];
         match socket.read(&mut buff).await {
             Ok(_) => {
                 if let Ok(req) = Request::try_from(&buff[..]) {
                     println!("{}", req.path());
-                    let response = "HTTP/1.1 200 OK\r\n\r\n<h1>Hello WOrld<h2>";
-                    match socket.write(response.as_bytes()).await {
+                    let response = Response::new(StatusCode::Ok, Option::Some("Hello World!!!".to_string()));
+
+                    match response.send( &mut socket).await {
                         Ok(_) => println!("Response sent ok"),
                         Err(e) => println!("Error occured during response: {}", e)
                     }
